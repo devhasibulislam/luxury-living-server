@@ -1,0 +1,25 @@
+{
+  "name": "luxury-living-server",
+  "version": "1.0.0",
+  "description": "backend codes for luxury living project that interact with front end and creating a better user experience.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hasibulislam999/luxury-living-server.git"
+  },
+  "keywords": [
+    "promise",
+    "async",
+    "payment",
+    "upload"
+  ],
+  "author": "Hasibul Islam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hasibulislam999/luxury-living-server/issues"
+  },
+  "homepage": "https://github.com/hasibulislam999/luxury-living-server#readme"
+}
