@@ -36,7 +36,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         await client.connect();
-        console.log("MongoDB connected");
+        console.log("MongoDB connected on driver route");
 
         // driver database
         const userCollection = client.db("people").collection("user");
