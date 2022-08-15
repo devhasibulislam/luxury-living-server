@@ -8,11 +8,17 @@
  */
 
 // external imports
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const cors = require("cors");
+const multer = require("multer");
+const upload = multer({ dest: "./uploads/" });
+const fs = require("fs");
 
 // internal imports
 const admin = express.Router();
+admin.use(cors());
+admin.use(express.static("public"));
 
 // mongodb connectivity
 const uri = process.env.DB_URI;
@@ -26,7 +32,59 @@ async function run() {
     try {
         await client.connect();
         console.log("MongoDB connected on admin route");
-        const collection = client.db("test").collection("devices");
+
+        // databases for admin
+        const database = client.db("main");
+        const services = database.collection("services");
+
+        /**
+         * -------------------------
+         * FILE UPLOADING PROPERTIES
+         * -------------------------
+         * fieldname: "avatar",
+         * originalname: "myself signature.png",
+         * encoding: "7bit",
+         * mimetype: "image/png",
+         * destination: "../uploads/",
+         * filename: "459273ff01083535f203b2cb13a080d1",
+         * path: "..\\uploads\\459273ff01083535f203b2cb13a080d1",
+         * size: 11646
+         */
+        admin.post("/service", upload.single("avatar"), (req, res) => {
+            // console.log(req.file);
+            const modifiedFileName = req.file.originalname.split(" ").join("_");
+            const newFileName = modifiedFileName.split(".").join(`-${Date.now()}.`);
+            fs.rename(`./uploads/${req.file.filename}`, `./uploads/${newFileName}`, err => {
+                if (!err) {
+                    // console.log(newFileName);
+                    res.status(203).send({ avatar: newFileName });
+                }
+            });
+        });
+
+        admin.route("/servicing")
+            .post(async (req, res) => {
+                res.status(201).send(await services.insertOne(req.body));
+            })
+            .get(async (req, res) => {
+                res.status(200).send(await services.find({}).toArray());
+            });
+
+        admin.route("/servicing/:id")
+            .put(async (req, res) => {
+                const body = req.body;
+                const { id } = req.params;
+                const filter = { _id: ObjectId(id) };
+                const options = { upsert: true };
+                const updateDoc = {
+                    $set: body,
+                };
+                const result = await services.updateOne(filter, updateDoc, options);
+                res.status(201).send(result);
+            })
+            .delete(async (req, res) => {
+                res.status(200).send(await services.deleteOne({ _id: ObjectId(req.params.id) }));
+            });
     } catch {
         // await client.close();
     }
@@ -36,7 +94,7 @@ run().catch(console.dir);
 // admin route credentials started
 admin.get("/", (req, res) => {
     res.status(200).json({
-        message: "welcome to admin route"
+        message: "welcome to Admin route"
     });
 });
 
