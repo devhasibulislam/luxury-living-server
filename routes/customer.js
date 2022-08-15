@@ -9,7 +9,7 @@
 
 // external imports
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // internal imports
 const customer = express.Router();
@@ -26,7 +26,50 @@ async function run() {
     try {
         await client.connect();
         console.log("MongoDB connected on customer route");
-        const collection = client.db("test").collection("devices");
+
+        // databases for customer
+        const database = client.db("customer");
+        const booking = database.collection("booking");
+        const bookingList = database.collection("booking_list");
+        const review = database.collection("review");
+
+        /**
+         * ----------------
+         * CUSTOMER BOOKING
+         * ----------------
+         */
+        customer.route("/booking")
+            .post(async (req, res) => {
+                res.status(201).send(await booking.insertOne(req.body));
+            })
+            .get(async (req, res) => {
+                res.status(200).send(await booking.find({}).toArray());
+            })
+            .put(async (req, res) => {
+                const { id, status } = req.body;
+                const filter = { _id: ObjectId(id) };
+                const options = { upsert: true };
+                const updateDoc = {
+                    $set: {
+                        status: status,
+                    }
+                };
+                const result = await booking.updateOne(filter, updateDoc, options);
+                res.status(201).send(result);
+            });
+
+        /**
+         * ---------------
+         * CUSTOMER REVIEW
+         * ---------------
+         */
+        customer.route("/review")
+            .post(async (req, res) => {
+                res.status(201).send(await review.insertOne(req.body));
+            })
+            .get(async (req, res) => {
+                res.status(200).send(await review.find({}).toArray());
+            });
     } catch {
         // await client.close();
     }
@@ -36,7 +79,7 @@ run().catch(console.dir);
 // customer route credentials started
 customer.get("/", async (req, res) => {
     res.status(200).json({
-        message: "welcome to customer route."
+        message: "welcome to Customer route."
     });
 });
 
