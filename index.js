@@ -20,6 +20,7 @@ const port = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 app.set("view engine", "ejs");
+app.use(express.static("uploads"));
 
 // internal imports
 const customer = require("./routes/customer");
@@ -39,14 +40,46 @@ async function run() {
         console.log("MongoDB connected on driver route");
 
         // driver database
-        const userCollection = client.db("people").collection("user");
+        const user = client.db("people").collection("user");
 
-        app.post("/user/", async (req, res) => {
-            res.status(201).send(await userCollection.insertOne(req.body));
+        /**
+         * ------------
+         * GENERAL USER
+         * ------------
+         */
+        app.route("/user")
+            .post(async (req, res) => {
+                res.status(201).send(await user.insertOne(req.body));
+            })
+            .get(async (req, res) => {
+                res.status(200).send(await user.find({ role: "customer" }).toArray());
+            });
+
+        /**
+         * ------------
+         * GET NEW USER
+         * ------------
+         */
+        app.get("/user/:name", async (req, res) => {
+            res.status(200).send(await user.find({ name: req.params.name }).toArray());
         });
 
-        app.get("/user/:name", async (req, res) => {
-            res.status(200).send(await userCollection.find({name: req.params.name}).toArray());
+        /**
+         * -----------
+         * UPDATE ROLE
+         * -----------
+         */
+        app.put("/user/:email", async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    role: "admin",
+                },
+            };
+            const result = await user.updateOne(filter, updateDoc, options);
+            res.status(201).send(result);
         });
     } catch {
         // await client.close();
@@ -56,7 +89,6 @@ run().catch(console.dir);
 
 // enable requests
 app.get("/", (req, res) => {
-    // res.status(200).json({ message: "Luxury Living app connected" });
     res.status(201).render("index", {
         name: process.env.APP_NAME,
     });
