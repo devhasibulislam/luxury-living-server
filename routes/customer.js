@@ -30,7 +30,6 @@ async function run() {
         // databases for customer
         const database = client.db("customer");
         const booking = database.collection("booking");
-        const bookingList = database.collection("booking_list");
         const review = database.collection("review");
 
         /**
