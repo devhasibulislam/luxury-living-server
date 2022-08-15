@@ -4,17 +4,12 @@
   "description": "backend codes for luxury living project that interact with front end and creating a better user experience.",
   "engines": {
     "node": "16.x",
-    "npm": "7.x"
+    "npm": "6.x"
   },
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start-dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hasibulislam999/luxury-living-server.git"
   },
   "keywords": [
     "promise",
@@ -24,10 +19,6 @@
   ],
   "author": "Hasibul Islam",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hasibulislam999/luxury-living-server/issues"
-  },
-  "homepage": "https://github.com/hasibulislam999/luxury-living-server#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
