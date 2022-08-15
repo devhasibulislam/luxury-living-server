@@ -2,6 +2,10 @@
   "name": "luxury-living-server",
   "version": "1.0.0",
   "description": "backend codes for luxury living project that interact with front end and creating a better user experience.",
+  "engines": {
+    "node": "18.x",
+    "npm": "7.x"
+  },
   "main": "index.js",
   "scripts": {
     "development": "NODE_ENV=development nodemon index.js",
