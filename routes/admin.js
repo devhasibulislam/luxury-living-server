@@ -21,7 +21,7 @@ admin.use(cors());
 admin.use(express.static("public"));
 
 // mongodb connectivity
-const uri = process.env.DB_URI;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@luxuryliving.38sh1rq.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
