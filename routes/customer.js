@@ -9,6 +9,7 @@
 
 // external imports
 const express = require("express");
+require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // internal imports

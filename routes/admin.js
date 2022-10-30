@@ -8,12 +8,13 @@
  */
 
 // external imports
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const upload = multer({ dest: "./uploads/" });
-const fs = require("fs");
 
 // internal imports
 const admin = express.Router();
